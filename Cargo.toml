@@ -1,0 +1,25 @@
+[package]
+name = "dmarc"
+version = "0.1.0"
+edition = "2021"
+authors = ["Sven Sauleau <sven@cloudflare.com>"]
+description = "DMARC (RFC7489) implementation"
+repository = "https://github.com/cloudflare/dmarc"
+documentation = "https://docs.rs/dmarc"
+categories = ["email"]
+keywords = ["email", "dmarc", "authentification"]
+readme = "README.md"
+license = "MIT"
+
+[dependencies]
+cfdkim = "0.1.0"
+trust-dns-resolver = "0.20.3"
+quick-error = "2.0.1"
+futures = "0.3.18"
+rand = "0.8.4"
+slog = "2.7.0"
+addr = "0.15.2"
+
+[dev-dependencies]
+tokio = { version = "1.14.0", features = ["macros"] }
+
