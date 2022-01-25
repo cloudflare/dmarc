@@ -70,9 +70,9 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "cfdkim"
-version = "0.1.0"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53e85757463507130da8d311b3931fac2e882e41835011e35c4011a757bdc5c0"
+checksum = "94662c8fe270b01cae62ce16a1b9ab62be3f2302d71b94763fb52b97ecf80517"
 dependencies = [
  "base64",
  "chrono",
@@ -170,7 +170,7 @@ dependencies = [
 
 [[package]]
 name = "dmarc"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "addr",
  "cfdkim",
