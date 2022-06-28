@@ -7,7 +7,7 @@ use trust_dns_resolver::TokioAsyncResolver;
 #[macro_use]
 extern crate quick_error;
 
-mod dns;
+pub mod dns;
 mod errors;
 mod parser;
 mod policy;
@@ -52,7 +52,7 @@ pub async fn load_policy<'a>(
 }
 
 // https://datatracker.ietf.org/doc/html/rfc7489#section-6.6.3
-async fn load_policy_with_resolver<'a>(
+pub async fn load_policy_with_resolver<'a>(
     resolver: Arc<dyn dns::Lookup>,
     logger: &'a slog::Logger,
     from_domain: &'a str,
