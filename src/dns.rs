@@ -43,7 +43,7 @@ impl Lookup for TokioAsyncResolverWrapper {
     }
 }
 
-pub(crate) fn from_tokio_resolver(resolver: TokioAsyncResolver) -> Arc<dyn Lookup> {
+pub fn from_tokio_resolver(resolver: TokioAsyncResolver) -> Arc<dyn Lookup> {
     Arc::new(TokioAsyncResolverWrapper { inner: resolver })
 }
 
