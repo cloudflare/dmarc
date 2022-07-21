@@ -1,6 +1,6 @@
 [package]
 name = "dmarc"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["Sven Sauleau <sven@cloudflare.com>"]
 description = "DMARC (RFC7489) implementation"
@@ -12,7 +12,7 @@ readme = "README.md"
 license = "MIT"
 
 [dependencies]
-cfdkim = "0.1.0"
+cfdkim = "0.2.0"
 trust-dns-resolver = "0.21"
 quick-error = "2.0.1"
 futures = "0.3.18"
