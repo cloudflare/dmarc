@@ -3,7 +3,7 @@ use rand::distributions::Distribution;
 use slog::debug;
 use std::default::Default;
 
-use crate::{dns, DMARCResult, PolicyContext, SPFResult};
+use crate::{dns, DMARCResult, PolicyContext};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Alignement {
@@ -74,18 +74,18 @@ impl Policy {
     }
 
     // https://datatracker.ietf.org/doc/html/rfc7489#section-3.1
-    pub fn check_spf_alignment(&self, from_domain: &str, spf_result: &SPFResult) -> bool {
+    pub fn check_spf_alignment(&self, from_domain: &str, spf_domain: &str) -> bool {
         match self.aspf {
             Alignement::Relaxed => {
                 let root_from = dns::get_root_domain_name(from_domain);
-                let root_used_domain = dns::get_root_domain_name(&spf_result.domain_used);
+                let root_used_domain = dns::get_root_domain_name(spf_domain);
 
                 if root_from == root_used_domain {
                     return true;
                 }
             }
             Alignement::Strict => {
-                if from_domain == spf_result.domain_used {
+                if from_domain == spf_domain {
                     return true;
                 }
             }
@@ -130,8 +130,13 @@ impl Policy {
             return DMARCResult::neutral(self.clone());
         }
 
+        // comparison should be done in a case-insensitive manner
+        // as per https://datatracker.ietf.org/doc/html/rfc7489#section-3.1
+        let from_domain = ctx.from_domain.to_lowercase();
+        let spf_domain = ctx.spf_result.domain_used.to_lowercase();
+
         // If DKIM is aligned, check its result. If pass, DMARC passes
-        if self.check_dkim_alignment(&ctx.from_domain, &ctx.dkim_result) {
+        if self.check_dkim_alignment(&from_domain, &ctx.dkim_result) {
             let res = ctx.dkim_result.summary();
             if res == "pass" {
                 return DMARCResult::pass(self.clone());
@@ -141,7 +146,7 @@ impl Policy {
         }
 
         // If PSF is aligned, check its result. If pass, DMARC passes
-        if self.check_spf_alignment(&ctx.from_domain, &ctx.spf_result) {
+        if self.check_spf_alignment(&from_domain, &spf_domain) {
             let res = &ctx.spf_result.value;
             if res == "pass" {
                 return DMARCResult::pass(self.clone());
@@ -158,6 +163,7 @@ impl Policy {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::SPFResult;
 
     #[test]
     fn test_should_apply() {
@@ -258,19 +264,28 @@ mod tests {
             domain_used: "notfy.a.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(policy.check_spf_alignment(from_domain, &spf_result), false);
+        assert_eq!(
+            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
+            false
+        );
 
         let spf_result = SPFResult {
             domain_used: "a.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(policy.check_spf_alignment(from_domain, &spf_result), true);
+        assert_eq!(
+            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
+            true
+        );
 
         let spf_result = SPFResult {
             domain_used: "cc.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(policy.check_spf_alignment(from_domain, &spf_result), false);
+        assert_eq!(
+            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
+            false
+        );
     }
 
     #[test]
@@ -284,13 +299,19 @@ mod tests {
             domain_used: "notfy.a.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(policy.check_spf_alignment(from_domain, &spf_result), true);
+        assert_eq!(
+            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
+            true
+        );
 
         let spf_result = SPFResult {
             domain_used: "cc.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(policy.check_spf_alignment(from_domain, &spf_result), false);
+        assert_eq!(
+            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
+            false
+        );
     }
 
     #[test]
