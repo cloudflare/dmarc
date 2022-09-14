@@ -1,6 +1,6 @@
 [package]
 name = "dmarc"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["Sven Sauleau <sven@cloudflare.com>"]
 description = "DMARC (RFC7489) implementation"
