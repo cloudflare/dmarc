@@ -93,7 +93,7 @@ impl Policy {
         false
     }
 
-    pub fn check_dkim_alignment<'a>(
+    pub fn check_dkim_alignment(
         &self,
         from_domain: &str,
         dkim_result: &cfdkim::DKIMResult,
@@ -124,7 +124,7 @@ impl Policy {
     ///
     /// Checks authentication mechanisms result
     /// https://datatracker.ietf.org/doc/html/rfc7489#section-4.2
-    pub fn apply<'a>(&self, ctx: &PolicyContext<'a>) -> DMARCResult {
+    pub fn apply(&self, ctx: &PolicyContext) -> DMARCResult {
         if !self.should_apply() {
             debug!(ctx.logger, "should not apply DMARC policy");
             return DMARCResult::neutral(self.clone());
@@ -162,6 +162,8 @@ impl Policy {
 
 #[cfg(test)]
 mod tests {
+    use cfdkim::canonicalization::Type;
+
     use super::*;
     use crate::SPFResult;
 
@@ -187,7 +189,11 @@ mod tests {
             let ctx = PolicyContext {
                 from_domain,
                 logger: &logger,
-                dkim_result: cfdkim::DKIMResult::pass("a.com".to_owned()),
+                dkim_result: cfdkim::DKIMResult::pass(
+                    "a.com".to_owned(),
+                    Type::Simple,
+                    Type::Simple,
+                ),
                 spf_result: SPFResult {
                     domain_used: "a.com".to_string(),
                     value: "pass".to_string(),
@@ -201,7 +207,11 @@ mod tests {
             let ctx = PolicyContext {
                 from_domain,
                 logger: &logger,
-                dkim_result: cfdkim::DKIMResult::pass("b.com".to_owned()),
+                dkim_result: cfdkim::DKIMResult::pass(
+                    "b.com".to_owned(),
+                    Type::Simple,
+                    Type::Simple,
+                ),
                 spf_result: SPFResult {
                     domain_used: "b.com".to_string(),
                     value: "pass".to_string(),
@@ -229,7 +239,11 @@ mod tests {
             let ctx = PolicyContext {
                 from_domain,
                 logger: &logger,
-                dkim_result: cfdkim::DKIMResult::pass("a.com".to_owned()),
+                dkim_result: cfdkim::DKIMResult::pass(
+                    "a.com".to_owned(),
+                    Type::Simple,
+                    Type::Simple,
+                ),
                 spf_result: SPFResult {
                     domain_used: "a.com".to_string(),
                     value: "fail".to_string(),
