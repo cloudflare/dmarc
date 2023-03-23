@@ -1,6 +1,6 @@
 [package]
 name = "dmarc"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 authors = ["Sven Sauleau <sven@cloudflare.com>"]
 description = "DMARC (RFC7489) implementation"
@@ -13,7 +13,7 @@ license = "MIT"
 
 [dependencies]
 cfdkim = "0.2.0"
-trust-dns-resolver = "0.21"
+trust-dns-resolver = "0.22"
 quick-error = "2.0.1"
 futures = "0.3.18"
 rand = "0.8.4"
@@ -21,5 +21,5 @@ slog = "2.7.0"
 addr = "0.15.2"
 
 [dev-dependencies]
-tokio = { version = "1.20.3", features = ["macros"] }
+tokio = { version = "1.20", features = ["macros"] }
 
