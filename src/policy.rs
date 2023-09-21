@@ -172,10 +172,10 @@ mod tests {
         let mut policy = Policy::new(ReceiverAction::Reject);
 
         policy.pct = 0;
-        assert_eq!(policy.should_apply(), false);
+        assert!(!policy.should_apply());
 
         policy.pct = 100;
-        assert_eq!(policy.should_apply(), true);
+        assert!(policy.should_apply());
     }
 
     #[test]
@@ -278,28 +278,19 @@ mod tests {
             domain_used: "notfy.a.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(
-            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
-            false
-        );
+        assert!(!policy.check_spf_alignment(from_domain, &spf_result.domain_used));
 
         let spf_result = SPFResult {
             domain_used: "a.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(
-            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
-            true
-        );
+        assert!(policy.check_spf_alignment(from_domain, &spf_result.domain_used));
 
         let spf_result = SPFResult {
             domain_used: "cc.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(
-            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
-            false
-        );
+        assert!(!policy.check_spf_alignment(from_domain, &spf_result.domain_used));
     }
 
     #[test]
@@ -313,19 +304,13 @@ mod tests {
             domain_used: "notfy.a.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(
-            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
-            true
-        );
+        assert!(policy.check_spf_alignment(from_domain, &spf_result.domain_used));
 
         let spf_result = SPFResult {
             domain_used: "cc.com".to_string(),
             value: "-".to_string(),
         };
-        assert_eq!(
-            policy.check_spf_alignment(from_domain, &spf_result.domain_used),
-            false
-        );
+        assert!(!policy.check_spf_alignment(from_domain, &spf_result.domain_used));
     }
 
     #[test]
@@ -336,19 +321,13 @@ mod tests {
         let from_domain = "a.com";
 
         let dkim_result = cfdkim::DKIMResult::neutral("notify.a.com".to_owned());
-        assert_eq!(
-            policy.check_dkim_alignment(from_domain, &dkim_result),
-            false
-        );
+        assert!(!policy.check_dkim_alignment(from_domain, &dkim_result));
 
         let dkim_result = cfdkim::DKIMResult::neutral("a.com".to_owned());
-        assert_eq!(policy.check_dkim_alignment(from_domain, &dkim_result), true);
+        assert!(policy.check_dkim_alignment(from_domain, &dkim_result));
 
         let dkim_result = cfdkim::DKIMResult::neutral("cc.com".to_owned());
-        assert_eq!(
-            policy.check_dkim_alignment(from_domain, &dkim_result),
-            false
-        );
+        assert!(!policy.check_dkim_alignment(from_domain, &dkim_result));
     }
 
     #[test]
@@ -359,15 +338,12 @@ mod tests {
         let from_domain = "a.com";
 
         let dkim_result = cfdkim::DKIMResult::neutral("a.com".to_owned());
-        assert_eq!(policy.check_dkim_alignment(from_domain, &dkim_result), true);
+        assert!(policy.check_dkim_alignment(from_domain, &dkim_result));
 
         let dkim_result = cfdkim::DKIMResult::neutral("notify.a.com".to_owned());
-        assert_eq!(policy.check_dkim_alignment(from_domain, &dkim_result), true);
+        assert!(policy.check_dkim_alignment(from_domain, &dkim_result));
 
         let dkim_result = cfdkim::DKIMResult::neutral("cc.com".to_owned());
-        assert_eq!(
-            policy.check_dkim_alignment(from_domain, &dkim_result),
-            false
-        );
+        assert!(!policy.check_dkim_alignment(from_domain, &dkim_result));
     }
 }

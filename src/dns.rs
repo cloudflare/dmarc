@@ -1,4 +1,4 @@
-///! Module to abstract DNS operations
+/// Module to abstract DNS operations
 use crate::DMARCError;
 use futures::future::BoxFuture;
 use std::sync::Arc;
